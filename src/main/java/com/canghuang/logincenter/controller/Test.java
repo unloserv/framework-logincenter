@@ -4,11 +4,16 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
+import com.canghuang.logincenter.utils.EncryptUtil;
 import com.canghuang.logincenter.utils.RSATool;
 
 public class Test {
 
     public static void main(String... args){
+        System.out.println(EncryptUtil.encrypt("123456", EncryptUtil.createSalt()).length());
+    }
+
+    private static void t1(){
         try {
             //===============生成公钥和私钥，公钥传给客户端，私钥服务端保留==================
             //生成RSA公钥和私钥，并Base64编码

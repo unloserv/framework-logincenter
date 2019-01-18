@@ -42,8 +42,8 @@ public class UserService {
         }
     }
 
-    public User validateUserExisit(String username) {
-        return userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
+    public User validateUserExisit(String account) {
+        return userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
     }
 
     public int validateUser (User user, String password){

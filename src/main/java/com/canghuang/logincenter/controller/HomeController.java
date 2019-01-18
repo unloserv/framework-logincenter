@@ -37,7 +37,7 @@ public class HomeController {
 
     @PostMapping("/register")
     public Mono<Result> register(@RequestBody User user) {
-        if (StringUtils.isEmpty(user.getAccount()) || !validateUsername(user.getAccount())) {
+        if (StringUtils.isEmpty(user.getAccount()) || !validateAccount(user.getAccount())) {
             return Mono.just(Result.failure("账号不符合要求，请检查"));
         }
         if (StringUtils.isEmpty(user.getPassword()) || !validatePassword(user.getPassword())) {
@@ -74,17 +74,17 @@ public class HomeController {
      *   并返回token
      */
     @PostMapping("/login")
-    public Mono<Result> login(@RequestParam("username") String username,
+    public Mono<Result> login(@RequestParam("account") String account,
                         @RequestParam("password") String password) {
         try {
-            if (!validateUsername(username)) {
+            if (!validateAccount(account)) {
                 return Mono.just(Result.failure("账号不符合要求，请检查"));
             }
             if (!validatePassword(password)) {
                 return Mono.just(Result.failure("密码不符合要求，请检查"));
             }
             // 根据用户名生成redisKey
-            String redisKey = EncryptUtil.md5Encode(username);
+            String redisKey = EncryptUtil.md5Encode(account);
             // 判断是否已登录
             boolean loginFlag = stringRedisTemplate.hasKey(redisKey);
             String token;
@@ -94,7 +94,7 @@ public class HomeController {
                 return Mono.just(Result.success(null, token));
             } else {
                 // 未登录 验证用户是否存在
-                User user = userService.validateUserExisit(username);
+                User user = userService.validateUserExisit(account);
                 if (user == null) {
                     return Mono.just(Result.failure("用户不存在，请检查用户名是否正确"));
                 }
@@ -121,8 +121,8 @@ public class HomeController {
         return Mono.just(Result.failure("发生错误"));
     }
 
-    private boolean validateUsername(String username) {
-        if (StringUtils.isEmpty(username) || username.length() < 8 || username.length() > 16) {
+    private boolean validateAccount(String account) {
+        if (StringUtils.isEmpty(account) || account.length() < 8 || account.length() > 16) {
             return false;
         }
         return true;

@@ -12,9 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -74,8 +78,9 @@ public class HomeController {
      *   并返回token
      */
     @PostMapping("/login")
-    public Mono<Result> login(@RequestParam("account") String account,
-                        @RequestParam("password") String password) {
+    public Mono<Result> login(@RequestHeader("Authorization") String authorization,
+                    @RequestParam("account") String account,
+                    @RequestParam("password") String password) {
         try {
             if (!validateAccount(account)) {
                 return Mono.just(Result.failure("账号不符合要求，请检查"));
@@ -83,14 +88,14 @@ public class HomeController {
             if (!validatePassword(password)) {
                 return Mono.just(Result.failure("密码不符合要求，请检查"));
             }
-            // 根据用户名生成redisKey
-            String redisKey = EncryptUtil.md5Encode(account);
+            // 根据用户名生成tokenId
+            String tokenId = EncryptUtil.md5Encode(account);
             // 判断是否已登录
-            boolean loginFlag = stringRedisTemplate.hasKey(redisKey);
+            boolean loginFlag = stringRedisTemplate.hasKey(tokenId);
             String token;
             if (loginFlag) {
                 // 已登录 从redis中获取token
-                token = stringRedisTemplate.opsForValue().get(redisKey);
+                token = stringRedisTemplate.opsForValue().get(tokenId);
                 return Mono.just(Result.success(null, token));
             } else {
                 // 未登录 验证用户是否存在
@@ -105,11 +110,11 @@ public class HomeController {
                         // 计算过期时间
                         Date expertTime = new Date(LocalDateTime.now().plusDays(1L).toInstant(ZoneOffset.of("+8")).toEpochMilli());
                         // 生成令牌
-                        token = AccessToken.build(redisKey, expertTime, user);
+                        token = AccessToken.build(tokenId, expertTime, user);
                         // 将令牌存入redis
-                        stringRedisTemplate.opsForValue().set(redisKey, token);
+                        stringRedisTemplate.opsForValue().set(tokenId, token);
                         // 设定过期时间
-                        stringRedisTemplate.expireAt(redisKey, expertTime);
+                        stringRedisTemplate.expireAt(tokenId, expertTime);
                         return Mono.just(Result.success(null, token));
                     case 2: // 验证失败
                         return Mono.just(Result.failure("身份验证失败，请检查密码是否正确"));
@@ -142,51 +147,22 @@ public class HomeController {
             if (StringUtils.isEmpty(accessToken)) {
                 return Mono.just(Result.failure("token不符合要求，请检查"));
             }
-            String redisKey = AccessToken.verify(accessToken).getKeyId();
-            if (redisKey == null) {
+            String tokenId = AccessToken.verify(accessToken).getKeyId();
+            if (tokenId == null) {
                 return Mono.just(Result.failure("token验证失败: " + accessToken));
             }
             // 2.验证用户是否已登录
-            boolean loginFlag = stringRedisTemplate.hasKey(redisKey);
+            boolean loginFlag = stringRedisTemplate.hasKey(tokenId);
             if (loginFlag) {
-                String token = stringRedisTemplate.opsForValue().get(redisKey);
+                String token = stringRedisTemplate.opsForValue().get(tokenId);
                 if (!token.equals(accessToken)) {
                     return Mono.just(Result.failure("token验证失败: " + accessToken));
                 }
                 // 3.退出登录
-                stringRedisTemplate.delete(redisKey);
+                stringRedisTemplate.delete(tokenId);
                 return Mono.just(Result.success("再见"));
             } else {
                 return Mono.just(Result.success("没登录瞎退出什么"));
-            }
-        } catch (JWTVerificationException e) {
-            logger.warn(e.toString());
-        }
-        return Mono.just(Result.failure("发生错误"));
-    }
-
-    @GetMapping("/verify")
-    public Mono<Result> verify(@RequestParam("accessToken") String accessToken) {
-        try {
-            // 1.验证token是否合法
-            if (StringUtils.isEmpty(accessToken)) {
-                return Mono.just(Result.failure("token不符合要求，请检查"));
-            }
-            DecodedJWT decodedJWT = AccessToken.verify(accessToken);
-            String redisKey = decodedJWT.getKeyId();
-            if (redisKey == null) {
-                return Mono.just(Result.failure("token验证失败: " + accessToken));
-            }
-            // 2.验证用户是否已登录
-            boolean loginFlag = stringRedisTemplate.hasKey(redisKey);
-            if (loginFlag) {
-                String token = stringRedisTemplate.opsForValue().get(redisKey);
-                if (!token.equals(accessToken)) {
-                    return Mono.just(Result.failure("token验证失败: " + accessToken));
-                }
-                return Mono.just(Result.success("验证成功", decodedJWT.getClaims()));
-            } else {
-                return Mono.just(Result.failure("token验证失败: " + accessToken));
             }
         } catch (JWTVerificationException e) {
             logger.warn(e.toString());

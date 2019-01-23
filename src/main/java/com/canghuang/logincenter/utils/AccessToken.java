@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.canghuang.logincenter.entity.User;
 
 import java.time.ZoneOffset;
+import java.time.temporal.TemporalField;
 import java.util.Base64;
 import java.util.Date;
 
@@ -93,8 +94,8 @@ public class AccessToken {
                     Use of this claim is OPTIONAL.
                  */
 
-                /*
-                    自定义
+
+                // 自定义
 
                 .withClaim("uid", user.getId())
                 .withClaim("uname", user.getName())
@@ -102,13 +103,15 @@ public class AccessToken {
                 .withClaim("ullt", user.getLastLoginTime() == null ? null : user.getLastLoginTime().toInstant(ZoneOffset.of("+8")).toEpochMilli())
                 .withClaim("ulli", user.getLastLoginIp())
                 .withClaim("urt", user.getRegisterTime() == null ? null : user.getRegisterTime().toInstant(ZoneOffset.of("+8")).toEpochMilli())
-*/
-                .withClaim("uid", 3)
-                .withClaim("uname", 11)
-                .withClaim("uface", 22)
-                .withClaim("ullt", 22)
-                .withClaim("ulli", 333)
-                .withClaim("urt", 111)
+
+                /*
+                    .withClaim("uid", user.getId())
+                    .withClaim("uname", user.getName())
+                    .withClaim("uface", user.getUserface())
+                    .withClaim("ullt", user.getLastLoginTime().toInstant(ZoneOffset.of("+8")).toEpochMilli())
+                    .withClaim("ulli", user.getLastLoginIp())
+                    .withClaim("urt", u)
+                */
                 .sign(Algorithm.HMAC256(JWTSignature_Base64));
     }
 

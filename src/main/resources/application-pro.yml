@@ -32,6 +32,13 @@ spring:
         min-idle: 0 # 连接池中的最小空闲连接
   timeout: 60s
 
+  # Thymeleaf Setting
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: utf-8
+
 eureka:
   instance:
     hostname: 39.104.113.97

@@ -6,20 +6,22 @@ server:
 spring:
   application:
     name: logincenter
-  # datasource setting
+  # DataSource Setting
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://39.104.113.97:3306/logincenter?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-  # cache setting
+
+  # Cache Setting
   cache:
     type: redis # 使用redis做缓存
     redis:
       time-to-live: 86400s #缓存超时时间
       cache-null-values: false #是否缓存空值
-  # Redis setting
+
+  # Redis Setting
   redis:
     database: 0 # Redis数据库索引（默认为0）
     host: 39.104.113.97 # Redis服务器地址
@@ -31,6 +33,14 @@ spring:
         max-idle: 8 # 连接池中的最大空闲连接
         min-idle: 0 # 连接池中的最小空闲连接
     timeout: 60s
+
+  # Thymeleaf Setting
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: utf-8
+    cache: false
 
 eureka:
   instance:

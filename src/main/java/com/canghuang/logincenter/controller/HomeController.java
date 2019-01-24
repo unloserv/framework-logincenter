@@ -1,24 +1,20 @@
 package com.canghuang.logincenter.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.canghuang.logincenter.entity.User;
 import com.canghuang.logincenter.service.UserService;
 import com.canghuang.logincenter.utils.AccessToken;
 import com.canghuang.logincenter.utils.EncryptUtil;
+import com.canghuang.logincenter.utils.PublicKeyGenerator;
 import com.canghuang.logincenter.utils.Result;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -82,6 +78,9 @@ public class HomeController {
                     @RequestParam("account") String account,
                     @RequestParam("password") String password) {
         try {
+            if (StringUtils.isEmpty(authorization) || PublicKeyGenerator.publicKey.equals(authorization)) {
+                return Mono.just(Result.failure("非法访问"));
+            }
             if (!validateAccount(account)) {
                 return Mono.just(Result.failure("账号不符合要求，请检查"));
             }

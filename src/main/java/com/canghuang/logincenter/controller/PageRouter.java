@@ -24,8 +24,6 @@ import reactor.core.publisher.Mono;
 public class PageRouter {
 
 
-    Logger logger = LoggerFactory.getLogger(PageRouter.class);
-
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 

@@ -128,7 +128,6 @@
                     $("#collapse").collapse('show')
                 },
                 function () {
-                    console.log(1)
                     $("#collapse").collapse('hide')
                 }
             )
@@ -211,6 +210,7 @@
                             $("#message").addClass("text-success")
                             if (timer === 0) {
                                 clearInterval(timerController)
+                                $progress.hide()
                                 verify()
                             }
                             timer--
@@ -226,7 +226,6 @@
                 })
             $btn.val("登录")
             $btn.removeClass('disabled');
-            $progress.hide()
         }
 
         function ajaxPost(uri, param, callback) {

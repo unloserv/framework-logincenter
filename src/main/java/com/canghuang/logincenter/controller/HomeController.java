@@ -110,9 +110,10 @@ public class HomeController {
                 case 2:
                 // 验证失败
                     return Mono.just(Result.failure("身份验证失败，请检查密码是否正确"));
+                default:
+                    return Mono.just(Result.error());
             }
         }
-        return Mono.just(Result.failure("发生错误"));
     }
 
     @PutMapping("/logout")

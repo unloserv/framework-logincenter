@@ -62,11 +62,7 @@
         .inputGroup input:focus {
             background: rgba(21, 21, 21, 0.7);
         }
-        .carousel-item {
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
+
         #loginBtn {
             margin-top: 4px;
             height: 108px;
@@ -97,7 +93,6 @@
         }
         .progress {
             height: 4px;
-
             position: absolute;
             top: 320px;
             left: 50%;
@@ -202,12 +197,10 @@
                         localStorage.setItem("accessToken", result.data)
                         var timerController = setInterval( function () {
                             var progress = (100 - ((timer-1) * 33) / 1.00) + '%'
-                            console.log(progress)
                             $progress.find(".progress-bar").css("width", progress)
+                            $progress.find(".progress-bar").removeClass("bg-danger")
+                            $progress.find(".progress-bar").addClass("bg-success")
                             $progress.find(".progress-bar").attr("aria-valuenow", progress)
-                            $("#message").text("登录成功，" + timer + "秒后将会跳转")
-                            $("#message").removeClass("text-danger")
-                            $("#message").addClass("text-success")
                             if (timer === 0) {
                                 clearInterval(timerController)
                                 $progress.hide()
@@ -217,6 +210,10 @@
                         } , 1000)
                     } else if (result.code === 0) {
                         // failed
+                        $progress.find(".progress-bar").css("width", "100%")
+                        $progress.find(".progress-bar").removeClass("bg-success")
+                        $progress.find(".progress-bar").addClass("bg-danger")
+                        $progress.find(".progress-bar").attr("aria-valuenow", "100%")
                         $("#message").removeClass("text-success")
                         $("#message").addClass("text-danger")
                         $("#message").text(result.msg)
@@ -264,21 +261,22 @@
 </head>
 <body>
 <div class="container-fluid">
-    <div id="carousel" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-            <li data-target="#carousel" data-slide-to="0" class="active"></li>
-            <li data-target="#carousel" data-slide-to="1"></li>
-            <li data-target="#carousel" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-            <div id="image1" class="carousel-item active" style="background: url('https://api.berryapi.net/bing/image/?w=1920&h=1080&d=0') no-repeat  scroll center center / 105%; filter: blur(4px);"></div>
-            <div id="image2" class="carousel-item" style="background: url('https://api.berryapi.net/bing/image/?w=1920&h=1080&d=1') no-repeat  scroll center center / 105%; filter: blur(4px);"></div>
-            <div id="image3" class="carousel-item" style="background: url('https://api.berryapi.net/bing/image/?w=1920&h=1080&d=2')  no-repeat  scroll  center center / 105%; filter: blur(4px);"></div>
-        </div>
-    </div>
     <div>
         <div class="card">
-            <div class="card-img-top" alt="请登录"></div>
+            <div class="card-img-top" alt="请登录">
+                <div id="carousel" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#carousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#carousel" data-slide-to="1"></li>
+                        <li data-target="#carousel" data-slide-to="2"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div id="image1" class="carousel-item active" style="background: url('https://api.berryapi.net/bing/image/?w=1920&h=1080&d=0') no-repeat  scroll center center / 105%; filter: blur(4px);"></div>
+                        <div id="image2" class="carousel-item" style="background: url('https://api.berryapi.net/bing/image/?w=1920&h=1080&d=1') no-repeat  scroll center center / 105%; filter: blur(4px);"></div>
+                        <div id="image3" class="carousel-item" style="background: url('https://api.berryapi.net/bing/image/?w=1920&h=1080&d=2')  no-repeat  scroll  center center / 105%; filter: blur(4px);"></div>
+                    </div>
+                </div>
+            </div>
             <div class="card-body">
                 <h5 class="card-title">欢迎访问CSH统一登录门户</h5>
                 <div class="row">

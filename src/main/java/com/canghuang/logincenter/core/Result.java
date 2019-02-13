@@ -1,6 +1,7 @@
-package com.canghuang.logincenter.utils;
+package com.canghuang.logincenter.core;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class Result {
 
     private final static int SUCCESS = 1;
@@ -19,6 +21,8 @@ public class Result {
     private int code;
     private String msg;
     private Object data;
+
+
 
     public Result(int code, Object data, String msg) {
         this.code = code;

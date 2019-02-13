@@ -11,6 +11,7 @@ public class PublicKeyGenerator {
 
     public static void updatePublicKey() {
         publicKey = EncryptUtil.md5Encode(publicKey);
+        System.out.println("keyUpdate: " + publicKey);
     }
 
 }

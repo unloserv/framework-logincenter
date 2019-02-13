@@ -79,4 +79,4 @@ mybatis-plus:
 
 logging:
   level:
-    com.canghuang.logincenter.mapper: debug
+    com.canghuang.logincenter: debug

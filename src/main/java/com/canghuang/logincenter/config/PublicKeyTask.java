@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class PublicKeyTask {
 
     @Scheduled(cron = "0 0/5 * * * ? ")
-    void update(){
+    void update() {
         PublicKeyGenerator.updatePublicKey();
     }
 }

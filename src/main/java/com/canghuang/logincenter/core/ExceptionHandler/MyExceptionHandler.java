@@ -1,6 +1,6 @@
 package com.canghuang.logincenter.core.ExceptionHandler;
 
-import com.canghuang.logincenter.core.Result;
+import com.canghuang.logincenter.core.AjaxResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;
@@ -35,11 +35,11 @@ public class MyExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(BindException.class)
-    public Result errorHandler(BindException ex) {
+    public AjaxResult errorHandler(BindException ex) {
         StringBuilder failureMsg = new StringBuilder();
         ex.getAllErrors().forEach(e -> failureMsg.append(e.getDefaultMessage()).append(" "));
         log.error("error => {}", failureMsg);
-        return Result.failure(failureMsg.toString());
+        return AjaxResult.failure(failureMsg.toString());
     }
 
     /**

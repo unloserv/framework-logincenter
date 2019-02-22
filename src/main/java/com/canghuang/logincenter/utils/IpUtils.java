@@ -1,7 +1,7 @@
 package com.canghuang.logincenter.utils;
 
+import com.canghuang.logincenter.core.AjaxResult;
 import com.canghuang.logincenter.core.IpAddressInfo;
-import com.canghuang.logincenter.core.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;
 
@@ -99,10 +99,10 @@ public class IpUtils {
       }
       bufferedReader.close();
       final ObjectMapper mapper = new ObjectMapper();
-      Result result = mapper.readValue(buffer.toString(), Result.class);
+      AjaxResult ajaxResult = mapper.readValue(buffer.toString(), AjaxResult.class);
       final IpAddressInfo info;
-      if (result.getCode() == 0) {
-        info = mapper.readValue(result.getData().toString(), IpAddressInfo.class);
+      if (ajaxResult.getCode() == 0) {
+        info = mapper.readValue(ajaxResult.getData().toString(), IpAddressInfo.class);
       } else {
         info = null;
       }

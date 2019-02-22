@@ -27,4 +27,5 @@ public class LoginUserDTO {
     @NotEmpty(message = "密码不能为空")
     @Size(min = 6, max = 12, message = "密码长度应在{min}-{max}位之间")
     private String password;
+
 }

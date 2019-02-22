@@ -8,7 +8,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.canghuang.logincenter.entity.User;
 
 import java.time.ZoneOffset;
-import java.time.temporal.TemporalField;
 import java.util.Base64;
 import java.util.Date;
 
@@ -120,11 +119,20 @@ public class AccessToken {
      * @param accessToken
      * @return
      */
-    public static DecodedJWT verify(String accessToken) throws JWTVerificationException {
+    public static DecodedJWT verify(final String accessToken) throws JWTVerificationException {
         Algorithm algorithm = Algorithm.HMAC256(JWTSignature_Base64);
         //Reusable verifier instance
         JWTVerifier verifier = JWT.require(algorithm).withIssuer(JWTIssuer).build();
         DecodedJWT jwt = verifier.verify(accessToken);
         return jwt;
+    }
+
+    /**
+     * 根据account计算tokenId的值
+     * @param account
+     * @return tokenId
+     */
+    public static String tokenId(final String account) {
+        return EncryptUtil.md5Encode(account);
     }
 }

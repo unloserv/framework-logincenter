@@ -23,7 +23,11 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
         <docker.image.prefix>canghuang</docker.image.prefix>
-		<swagger2.version>2.9.2</swagger2.version>
+		<springfox-swagger2.version>2.9.2</springfox-swagger2.version>
+		<okhttp.version>3.13.1</okhttp.version>
+		<lombok.version>1.18.2</lombok.version>
+        <java-jwt.version>3.4.0</java-jwt.version>
+        <mybatis-plus-boot-starter.version>3.0.7.1</mybatis-plus-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -90,7 +94,7 @@
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>3.0.7.1</version>
+            <version>${mybatis-plus-boot-starter.version}</version>
 		</dependency>
 
 
@@ -98,28 +102,35 @@
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>${swagger2.version}</version>
+			<version>${springfox-swagger2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${swagger2.version}</version>
+			<version>${springfox-swagger2.version}</version>
 		</dependency>
 
 		<!-- JWT 登录令牌 -->
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
-			<version>3.4.0</version>
+            <version>${java-jwt.version}</version>
 		</dependency>
 
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.2</version>
+			<version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>${okhttp.version}</version>
+		</dependency>
 
 		<!-- redis依赖commons-pool 这个依赖一定要添加 -->
 		<dependency>

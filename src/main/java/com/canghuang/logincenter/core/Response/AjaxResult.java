@@ -1,4 +1,4 @@
-package com.canghuang.logincenter.core;
+package com.canghuang.logincenter.core.Response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

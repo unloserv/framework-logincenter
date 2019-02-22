@@ -1,6 +1,6 @@
 package com.canghuang.logincenter.utils;
 
-import com.canghuang.logincenter.core.AjaxResult;
+import com.canghuang.logincenter.core.Response.AjaxResult;
 import com.canghuang.logincenter.core.IpAddressInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;

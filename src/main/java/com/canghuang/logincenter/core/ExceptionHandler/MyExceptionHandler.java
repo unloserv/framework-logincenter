@@ -1,6 +1,6 @@
 package com.canghuang.logincenter.core.ExceptionHandler;
 
-import com.canghuang.logincenter.core.AjaxResult;
+import com.canghuang.logincenter.core.Response.AjaxResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;

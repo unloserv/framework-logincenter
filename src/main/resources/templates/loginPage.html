@@ -144,7 +144,7 @@
                     $(".story").css("opacity", 0)
                 }
             )
-            getBingWallPaperStory()
+            //getBingWallPaperStory()
         })
 
         function getBingWallPaperStory() {
@@ -291,14 +291,8 @@
             <div class="card-img-top" alt="请登录">
                 <div id="carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
-                        <div id="image1" class="carousel-item active">
-                            <img class="d-block w-100" src="https://api.berryapi.net/bing/image/?w=1920&h=1080&d=0" alt="First slide">
-                        </div>
-                        <div id="image2" class="carousel-item">
-                            <img class="d-block w-100" src="https://api.berryapi.net/bing/image/?w=1920&h=1080&d=1" alt="First slide">
-                        </div>
-                        <div id="image3" class="carousel-item">
-                            <img class="d-block w-100" src="https://api.berryapi.net/bing/image/?w=1920&h=1080&d=2" alt="First slide">
+                        <div id="image1" class="carousel-item" th:each="story : ${bingStoryQueue}">
+                            <img class="d-block w-100" th:src="${story.image}" alt="First slide">
                         </div>
                     </div>
                 </div>

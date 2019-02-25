@@ -2,10 +2,13 @@ package com.canghuang.logincenter.core.BingStory;
 
 import com.canghuang.logincenter.core.Constants;
 import com.canghuang.logincenter.utils.OkHttpUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
  * @date 2019/2/22
  * @description
  */
+@Slf4j
 @Component
 public class BingStoryUtils {
 
@@ -21,11 +25,11 @@ public class BingStoryUtils {
 
   private static final int MAX_STORY_NUMBER = 3;
 
-  private Queue<String> storyQueue = new ArrayBlockingQueue<>(MAX_STORY_NUMBER);
+  private Queue<BingStory> storyQueue = new ArrayBlockingQueue<>(MAX_STORY_NUMBER);
 
   private LocalDate lastestDate;
 
-  public Queue<String> getStoryQueue() {
+  public Queue<BingStory> getStoryQueue() {
     if (storyQueue.isEmpty()) {
       initQueue();
     }
@@ -36,8 +40,7 @@ public class BingStoryUtils {
   /** 初始化故事队列 */
   private void initQueue() {
     final LocalDate today = LocalDate.now();
-    final int days = storyQueue.size();
-    for (int i = 0; i < days; i++) {
+    for (int i = 0; i < MAX_STORY_NUMBER; i++) {
       addStory(today.minusDays(i));
     }
   }
@@ -76,7 +79,12 @@ public class BingStoryUtils {
     final String storyString =
         okHttpUtils.sendGetRequest(
             String.format(Constants.BING_STORY_API_HOST.value(), dateString));
-    storyQueue.add(storyString);
+    ObjectMapper objectMapper = new ObjectMapper();
+    try{
+      storyQueue.add(objectMapper.readValue(storyString, BingStory.class));
+    } catch (IOException e) {
+      log.error(e.toString());
+    }
     this.lastestDate = date;
   }
 }

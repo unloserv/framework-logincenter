@@ -2,6 +2,7 @@ package com.canghuang.logincenter.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.canghuang.logincenter.core.BingStory.BingStoryUtils;
 import com.canghuang.logincenter.utils.AccessToken;
 import com.canghuang.logincenter.utils.PublicKeyGenerator;
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +23,8 @@ import reactor.core.publisher.Mono;
 public class PageRouter {
 
   @Autowired private StringRedisTemplate stringRedisTemplate;
+
+  @Autowired private BingStoryUtils bingStoryUtils;
 
   @GetMapping("/verify")
   public Mono<String> verify(
@@ -68,6 +71,7 @@ public class PageRouter {
       @RequestParam("redirectUrl") String redirectUrl,
       @RequestParam("authorization") String authorization) {
     model.addAttribute("authorization", authorization);
+    model.addAttribute("bingStoryQueue", bingStoryUtils.getStoryQueue());
     model.addAttribute("redirectUrl", redirectUrl);
     return "loginPage.html";
   }

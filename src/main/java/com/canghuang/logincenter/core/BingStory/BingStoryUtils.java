@@ -40,8 +40,8 @@ public class BingStoryUtils {
   /** 初始化故事队列 */
   private void initQueue() {
     final LocalDate today = LocalDate.now();
-    for (int i = 0; i < MAX_STORY_NUMBER; i++) {
-      addStory(today.minusDays(i));
+    for (int i = MAX_STORY_NUMBER; i > 0; i++) {
+      addStory(today.minusDays(i - 1));
     }
   }
 

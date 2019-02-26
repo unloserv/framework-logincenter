@@ -52,19 +52,14 @@ public class OkHttpUtils {
    * @return
    */
   public String sendGetRequest(final String api) {
-    Response response = null;
+    Response response;
     try {
       Request request = new Request.Builder().url(api).build();
       response = okHttpClient.newCall(request).execute();
-      log.debug("testokhttp成功，url:'{}'，result:'{}'", api, response.body().string());
       return response.body().string();
     } catch (IOException e) {
       log.error("testokhttp失败，url:'{}'", api);
-      e.printStackTrace();
-    } finally {
-      if (response.body() != null) {
-        response.body().close(); // 一定要关闭，不然会泄露资源
-      }
+      log.error(e.toString());
     }
     return null;
   }

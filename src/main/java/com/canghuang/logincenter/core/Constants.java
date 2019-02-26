@@ -3,7 +3,7 @@ package com.canghuang.logincenter.core;
 public enum Constants {
 
   // 获取必应小故事的api
-  BING_STORY_API_HOST("https://api.berryapi.net/get/bing?AppKey=KIpvPXdids&id=%s");
+  BING_STORY_API_HOST("https://api-cn.berryapi.net/?service=App.Bing.Story&AppKey=KIpvPXdids&id=%s");
 
   private String value;
 

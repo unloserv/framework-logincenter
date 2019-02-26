@@ -1,11 +1,13 @@
 package com.canghuang.logincenter.core.BingStory;
 
 import com.canghuang.logincenter.core.Constants;
+import com.canghuang.logincenter.core.Response.AjaxResult;
 import com.canghuang.logincenter.utils.OkHttpUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +27,11 @@ public class BingStoryUtils {
 
   private static final int MAX_STORY_NUMBER = 3;
 
-  private Queue<BingStory> storyQueue = new ArrayBlockingQueue<>(MAX_STORY_NUMBER);
+  private Queue<BingStoryVO> storyQueue = new ArrayBlockingQueue<>(MAX_STORY_NUMBER);
 
   private LocalDate lastestDate;
 
-  public Queue<BingStory> getStoryQueue() {
+  public Queue<BingStoryVO> getStoryQueue() {
     if (storyQueue.isEmpty()) {
       initQueue();
     }
@@ -40,8 +42,8 @@ public class BingStoryUtils {
   /** 初始化故事队列 */
   private void initQueue() {
     final LocalDate today = LocalDate.now();
-    for (int i = MAX_STORY_NUMBER; i > 0; i++) {
-      addStory(today.minusDays(i - 1));
+    for (int i = 0; i < MAX_STORY_NUMBER; i++) {
+      addStory(today.minusDays(i));
     }
   }
 
@@ -80,8 +82,14 @@ public class BingStoryUtils {
         okHttpUtils.sendGetRequest(
             String.format(Constants.BING_STORY_API_HOST.value(), dateString));
     ObjectMapper objectMapper = new ObjectMapper();
-    try{
-      storyQueue.add(objectMapper.readValue(storyString, BingStory.class));
+    try {
+      AjaxResult ajaxResult = objectMapper.readValue(storyString, AjaxResult.class);
+      boolean flag =
+          storyQueue.offer(new BingStoryVO().build((LinkedHashMap) ajaxResult.getData()));
+      if (!flag) {
+        storyQueue.poll();
+        storyQueue.add(new BingStoryVO().build((LinkedHashMap) ajaxResult.getData()));
+      }
     } catch (IOException e) {
       log.error(e.toString());
     }

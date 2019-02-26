@@ -70,8 +70,8 @@ public class PageRouter {
       final Model model,
       @RequestParam("redirectUrl") String redirectUrl,
       @RequestParam("authorization") String authorization) {
-    model.addAttribute("authorization", authorization);
     model.addAttribute("bingStoryQueue", bingStoryUtils.getStoryQueue());
+    model.addAttribute("authorization", authorization);
     model.addAttribute("redirectUrl", redirectUrl);
     return "loginPage.html";
   }

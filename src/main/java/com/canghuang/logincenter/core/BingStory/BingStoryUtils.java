@@ -27,11 +27,11 @@ public class BingStoryUtils {
 
   private static final int MAX_STORY_NUMBER = 3;
 
-  private Queue<BingStoryVO> storyQueue = new ArrayBlockingQueue<>(MAX_STORY_NUMBER);
+  private Queue<BingStory> storyQueue = new ArrayBlockingQueue<>(MAX_STORY_NUMBER);
 
   private LocalDate lastestDate;
 
-  public Queue<BingStoryVO> getStoryQueue() {
+  public Queue<BingStory> getStoryQueue() {
     if (storyQueue.isEmpty()) {
       initQueue();
     }
@@ -84,11 +84,10 @@ public class BingStoryUtils {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       AjaxResult ajaxResult = objectMapper.readValue(storyString, AjaxResult.class);
-      boolean flag =
-          storyQueue.offer(new BingStoryVO().build((LinkedHashMap) ajaxResult.getData()));
+      boolean flag = storyQueue.offer(BingStory.build((LinkedHashMap) ajaxResult.getData()));
       if (!flag) {
         storyQueue.poll();
-        storyQueue.add(new BingStoryVO().build((LinkedHashMap) ajaxResult.getData()));
+        storyQueue.add(BingStory.build((LinkedHashMap) ajaxResult.getData()));
       }
     } catch (IOException e) {
       log.error(e.toString());

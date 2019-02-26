@@ -1,13 +1,11 @@
 package com.canghuang.logincenter.core.BingStory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.canghuang.logincenter.core.Constants;
-import com.canghuang.logincenter.core.Response.AjaxResult;
 import com.canghuang.logincenter.utils.OkHttpUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +25,11 @@ public class BingStoryUtils {
 
   private static final int MAX_STORY_NUMBER = 3;
 
-  private Queue<BingStory> storyQueue = new ArrayBlockingQueue<>(MAX_STORY_NUMBER);
+  private Queue<BingStoryVO> storyQueue = new ArrayBlockingQueue<>(MAX_STORY_NUMBER);
 
   private LocalDate lastestDate;
 
-  public Queue<BingStory> getStoryQueue() {
+  public Queue<BingStoryVO> getStoryQueue() {
     if (storyQueue.isEmpty()) {
       initQueue();
     }
@@ -81,16 +79,16 @@ public class BingStoryUtils {
     final String storyString =
         okHttpUtils.sendGetRequest(
             String.format(Constants.BING_STORY_API_HOST.value(), dateString));
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      AjaxResult ajaxResult = objectMapper.readValue(storyString, AjaxResult.class);
-      boolean flag = storyQueue.offer(BingStory.build((LinkedHashMap) ajaxResult.getData()));
-      if (!flag) {
-        storyQueue.poll();
-        storyQueue.add(BingStory.build((LinkedHashMap) ajaxResult.getData()));
-      }
-    } catch (IOException e) {
-      log.error(e.toString());
+    final JSONObject response = JSON.parseObject(storyString);
+    if (response.isEmpty() || response.getIntValue("ret") != 200) {
+      return;
+    }
+    final JSONObject story = response.getJSONObject("data");
+    final BingStoryVO storyVO = new BingStoryVO().build(story);
+    boolean flag = storyQueue.offer(storyVO);
+    if (!flag) {
+      storyQueue.poll();
+      storyQueue.add(storyVO);
     }
     this.lastestDate = date;
   }

@@ -22,8 +22,6 @@ public class AjaxResult {
     private String msg;
     private Object data;
 
-
-
     public AjaxResult(int code, Object data, String msg) {
         this.code = code;
         this.data = data;

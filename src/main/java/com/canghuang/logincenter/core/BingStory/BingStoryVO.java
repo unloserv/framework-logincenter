@@ -1,7 +1,6 @@
 package com.canghuang.logincenter.core.BingStory;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 /**
@@ -12,16 +11,14 @@ import lombok.Data;
 @Data
 public class BingStoryVO {
 
-  private BingStory primary;
+  private BingStoryPrimary primary;
 
-  private List<BingStory> extra;
+  private BingStoryExtra extra;
 
-  public BingStoryVO build(LinkedHashMap<String, Object> storyMap) {
+  public BingStoryVO build(JSONObject storyMap) {
     if (storyMap != null) {
-      this.primary = BingStory.build(
-              (LinkedHashMap<String, String>) storyMap.get("primary"));
-      this.extra = BingStory.buildExtra(
-              (LinkedHashMap<String, String>) storyMap.get("asc"));
+      this.primary = JSONObject.parseObject(storyMap.getString("primary"), BingStoryPrimary.class);
+      this.extra = JSONObject.parseObject(storyMap.getString("asc"), BingStoryExtra.class);
     }
     return this;
   }

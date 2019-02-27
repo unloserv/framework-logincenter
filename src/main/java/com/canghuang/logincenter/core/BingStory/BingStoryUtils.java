@@ -78,7 +78,7 @@ public class BingStoryUtils {
     }
     final JSONObject story = response.getJSONObject("data");
     final BingStoryVO storyVO = new BingStoryVO().build(story);
-    boolean flag = storyQueue.offer(storyVO);
+    final boolean flag = storyQueue.offer(storyVO);
     if (!flag) {
       storyQueue.poll();
       storyQueue.add(storyVO);

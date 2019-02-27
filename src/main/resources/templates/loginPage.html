@@ -135,6 +135,8 @@
   <script type="application/javascript">
     $(document).ready(function () {
       $("#progress").hide()
+      // 初始化背景图片
+      $(".background").css("background-image", "url(" + $(".carousel-item.active img")[0].src + ")")
       // 轮播图切换完成时，同时改变card的img
       $("#carousel").on('slid.bs.carousel', function () {
         var image = $(".carousel-item.active img")[0].src
@@ -247,9 +249,10 @@
       <div class="card-img-top" alt="请登录">
         <div id="carousel" class="carousel slide" data-ride="carousel">
           <div class="carousel-inner">
-            <div id="image1" th:each="story,iterStat : ${bingStoryQueue}"
-                 th:class="${iterStat.first}? 'carousel-item active' : 'carousel-item'">
-              <img class="d-block w-100" th:src="${story.primary.image}">
+            <div th:each="story,iterStat : ${bingStoryQueue}"
+                 th:class="${iterStat.first}? 'carousel-item active' : 'carousel-item'"
+                 th:if="${story.primary}">
+              <img class="d-block w-100" th:if="${story.primary}" th:src="${story.primary.image}">
             </div>
           </div>
         </div>

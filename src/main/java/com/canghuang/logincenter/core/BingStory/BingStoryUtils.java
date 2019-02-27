@@ -40,8 +40,8 @@ public class BingStoryUtils {
   /** 初始化故事队列 */
   private void initQueue() {
     final LocalDate today = LocalDate.now();
-    for (int i = 0; i < MAX_STORY_NUMBER; i++) {
-      addStory(today.minusDays(i));
+    for (int i = MAX_STORY_NUMBER; i > 0; i--) {
+      addStory(today.minusDays(MAX_STORY_NUMBER - i));
     }
   }
 
@@ -49,14 +49,7 @@ public class BingStoryUtils {
   private void outDateCheck() {
     LocalDate today = LocalDate.now();
     if (isOutDate(today)) {
-      final long days = today.toEpochDay() - lastestDate.toEpochDay();
-      if (days >= MAX_STORY_NUMBER) {
-        initQueue();
-      } else {
-        for (int i = 0; i < days; i++) {
-          addStory(lastestDate.plusDays(i + 1));
-        }
-      }
+      initQueue();
     }
   }
 

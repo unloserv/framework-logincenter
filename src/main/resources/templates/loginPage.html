@@ -45,6 +45,16 @@
       opacity: 0;
     }
 
+    .background .story .story_title {
+      display: inline-block;
+      font-size: 22px;
+    }
+
+    .background .story .story_location {
+      display: inline-block;
+      margin-left: 10px;
+    }
+
     .middle {
       transition: 1s;
     }
@@ -148,14 +158,22 @@
             $(".middle").css("opacity", 0)
             // 取消.background模糊
             $(".background").css("filter", "blur(0px)")
-            $(".story").css("opacity", 1)
+            // 显示.story
+            var storyDate = $(".carousel-item.active").attr("date")
+            var storyActive = $(".story[date=" + storyDate + "]")
+            storyActive.css("opacity", 1)
+            storyActive.attr("active", true)
           },
           function () {
             // 显示登录框
             $(".middle").css("opacity", 1)
             // 增加.background模糊
             $(".background").css("filter", "blur(4px)")
-            $(".story").css("opacity", 0)
+            // 隐藏.story
+            var storyActive = $(".story[active=true]")
+            console.log(storyActive)
+            storyActive.css("opacity", 0)
+            storyActive.attr("active=false")
           }
       )
     })
@@ -238,10 +256,16 @@
 <body>
 <div class="container-fluid">
   <div class="background">
-    <div class="story">
-      <p class="story_title" style="display: inline-block; font-size: 22px;"></p>
-      <p class="story_location" style="display: inline-block; margin-left: 10px;"></p>
-      <p class="story_story"></p>
+    <div class="story"
+         th:each="story : ${bingStoryQueue}"
+         th:if="${story.primary}"
+         th:attr="date=${story.primary.date}">
+      <p class="story_title"
+         th:text="${story.primary.title}"></p>
+      <p class="story_location"
+         th:text="${story.primary.continent} + ${story.primary.country} + ${story.primary.city}"></p>
+      <p class="story_story"
+         th:text="${story.primary.story}"></p>
     </div>
   </div>
   <div class="middle">
@@ -251,7 +275,8 @@
           <div class="carousel-inner">
             <div th:each="story,iterStat : ${bingStoryQueue}"
                  th:class="${iterStat.first}? 'carousel-item active' : 'carousel-item'"
-                 th:if="${story.primary}">
+                 th:if="${story.primary}"
+                 th:attr="date=${story.primary.date}">
               <img class="d-block w-100" th:if="${story.primary}" th:src="${story.primary.image}">
             </div>
           </div>

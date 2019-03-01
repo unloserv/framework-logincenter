@@ -32,8 +32,9 @@ public class BingStoryUtils {
   public Queue<BingStoryVO> getStoryQueue() {
     if (storyQueue.isEmpty()) {
       initQueue();
+    } else {
+      outDateCheck();
     }
-    outDateCheck();
     return storyQueue;
   }
 
@@ -41,7 +42,11 @@ public class BingStoryUtils {
   private void initQueue() {
     final LocalDate today = LocalDate.now();
     for (int i = MAX_STORY_NUMBER; i > 0; i--) {
-      addStory(today.minusDays(MAX_STORY_NUMBER - i));
+      final LocalDate date = today.minusDays(MAX_STORY_NUMBER - i);
+      final BingStoryVO storyVO = findStory(date);
+      if (storyVO != null) {
+        addStory(date, storyVO);
+      }
     }
   }
 
@@ -63,21 +68,34 @@ public class BingStoryUtils {
   }
 
   /**
-   * 增加故事
+   * 根据日期查找小故事
    *
    * @param date
+   * @return
    */
-  private void addStory(LocalDate date) {
+  private BingStoryVO findStory(LocalDate date) {
     final String dateString = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     final String storyString =
         okHttpUtils.sendGetRequest(
             String.format(Constants.BING_STORY_API_HOST.value(), dateString));
     final JSONObject response = JSON.parseObject(storyString);
     if (response.isEmpty() || response.getIntValue("ret") != 200) {
-      return;
+      return null;
     }
     final JSONObject story = response.getJSONObject("data");
-    final BingStoryVO storyVO = new BingStoryVO().build(story);
+    if (story.getInteger("code") != null) {
+      return null;
+    }
+    return new BingStoryVO().build(story);
+  }
+
+  /**
+   * 增加故事
+   *
+   * @param date
+   * @param storyVO
+   */
+  private void addStory(LocalDate date, BingStoryVO storyVO) {
     final boolean flag = storyQueue.offer(storyVO);
     if (!flag) {
       storyQueue.poll();

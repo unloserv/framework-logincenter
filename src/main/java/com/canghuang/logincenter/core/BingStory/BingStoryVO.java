@@ -1,6 +1,7 @@
 package com.canghuang.logincenter.core.BingStory;
 
 import com.alibaba.fastjson.JSONObject;
+import java.time.LocalDate;
 import lombok.Data;
 
 /**
@@ -15,10 +16,13 @@ public class BingStoryVO {
 
   private BingStoryExtra extra;
 
-  public BingStoryVO build(JSONObject storyMap) {
+  private LocalDate date;
+
+  public BingStoryVO build(JSONObject storyMap, LocalDate date) {
     if (storyMap != null) {
       this.primary = JSONObject.parseObject(storyMap.getString("primary"), BingStoryPrimary.class);
       this.extra = JSONObject.parseObject(storyMap.getString("asc"), BingStoryExtra.class);
+      this.date = date;
     }
     return this;
   }

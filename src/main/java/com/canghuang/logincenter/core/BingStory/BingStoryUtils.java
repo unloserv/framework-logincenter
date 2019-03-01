@@ -40,14 +40,14 @@ public class BingStoryUtils {
 
   /** 初始化故事队列 */
   private void initQueue() {
-    final LocalDate today = LocalDate.now();
-    for (int i = MAX_STORY_NUMBER; i > 0; i--) {
-      final LocalDate date = today.minusDays(MAX_STORY_NUMBER - i);
+    LocalDate date = null;
+    for (int i = 0; i < MAX_STORY_NUMBER; i++) {
+      date = date == null ? LocalDate.now() : date.minusDays(1);
       final BingStoryVO storyVO = findStory(date);
-      if (storyVO != null) {
-        addStory(date, storyVO);
-      }
+      addStory(storyVO);
+      date = storyVO.getDate();
     }
+    this.lastestDate = LocalDate.now();
   }
 
   /** 故事过期检查 */
@@ -80,27 +80,25 @@ public class BingStoryUtils {
             String.format(Constants.BING_STORY_API_HOST.value(), dateString));
     final JSONObject response = JSON.parseObject(storyString);
     if (response.isEmpty() || response.getIntValue("ret") != 200) {
-      return null;
+      return findStory(date.minusDays(1));
     }
     final JSONObject story = response.getJSONObject("data");
     if (story.getInteger("code") != null) {
-      return null;
+      return findStory(date.minusDays(1));
     }
-    return new BingStoryVO().build(story);
+    return new BingStoryVO().build(story, date);
   }
 
   /**
    * 增加故事
    *
-   * @param date
    * @param storyVO
    */
-  private void addStory(LocalDate date, BingStoryVO storyVO) {
+  private void addStory(BingStoryVO storyVO) {
     final boolean flag = storyQueue.offer(storyVO);
     if (!flag) {
       storyQueue.poll();
       storyQueue.add(storyVO);
     }
-    this.lastestDate = date;
   }
 }
